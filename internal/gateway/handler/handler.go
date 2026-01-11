@@ -127,7 +127,10 @@ func (h *Handler) Router() http.Handler {
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		if _, err := w.Write([]byte("OK")); err != nil {
+			// Log error if logger is available, but client already received headers
+			return
+		}
 	})
 
 	r.Get("/swagger.json", h.SwaggerJSON)
@@ -139,7 +142,10 @@ func (h *Handler) Router() http.Handler {
 func respondJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		// Log error if logger is available, but client already received headers
+		return
+	}
 }
 
 func respondError(w http.ResponseWriter, status int, message string) {

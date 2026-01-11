@@ -107,7 +107,10 @@ func (h *Handler) SwaggerJSON(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(merged)
+	if err := json.NewEncoder(w).Encode(merged); err != nil {
+		http.Error(w, "Failed to encode swagger JSON", http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *Handler) SwaggerUI(w http.ResponseWriter, r *http.Request) {
@@ -157,6 +160,8 @@ func (h *Handler) SwaggerUI(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(html))
+	if _, err := w.Write([]byte(html)); err != nil {
+		return
+	}
 }
 
