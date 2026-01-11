@@ -67,22 +67,6 @@ go run ./cmd/gateway/main.go
 
 ## Структура проекта
 
-```
-taskflow/
-├── api/              # Proto определения
-├── cmd/              # Точки входа сервисов
-├── configs/          # Конфигурации
-├── internal/         # Внутренний код
-│   ├── domain/       # Доменные модели
-│   ├── user/         # User Service
-│   ├── task/         # Task Service
-│   ├── activity/     # Activity Service
-│   └── gateway/      # API Gateway
-├── pkg/              # Общие пакеты
-├── web/              # React фронтенд
-└── docker-compose.yaml
-```
-
 ![Project Structure](docs/images/structure.png)
 
 ## Основные возможности
