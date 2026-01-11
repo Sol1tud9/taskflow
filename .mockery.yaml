@@ -1,0 +1,59 @@
+packages:
+  github.com/taskflow/taskflow/internal/user/repository:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      filename: "mocks.go"
+      pkgname: "mocks"
+      structname: "{{.InterfaceName}}"
+    interfaces:
+      UserRepository:
+      TeamRepository:
+      TeamMemberRepository:
+
+  github.com/taskflow/taskflow/internal/user/usecase:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      filename: "mocks.go"
+      pkgname: "mocks"
+      structname: "{{.InterfaceName}}"
+    interfaces:
+      EventPublisher:
+      TeamEventPublisher:
+
+  github.com/taskflow/taskflow/internal/task/repository:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      filename: "mocks.go"
+      pkgname: "mocks"
+      structname: "{{.InterfaceName}}"
+    interfaces:
+      TaskRepository:
+      TaskHistoryRepository:
+
+  github.com/taskflow/taskflow/internal/task/usecase:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      filename: "mocks.go"
+      pkgname: "mocks"
+      structname: "{{.InterfaceName}}"
+    interfaces:
+      EventPublisher:
+
+  github.com/taskflow/taskflow/internal/activity/repository:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      filename: "mocks.go"
+      pkgname: "mocks"
+      structname: "{{.InterfaceName}}"
+    interfaces:
+      ActivityRepository:
+
+  github.com/taskflow/taskflow/internal/gateway/cache:
+    config:
+      dir: "{{.InterfaceDir}}/mocks"
+      filename: "mocks.go"
+      pkgname: "mocks"
+      structname: "{{.InterfaceName}}"
+    interfaces:
+      Cache:
+

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package taskflow.models.v1;
+option go_package = "github.com/Sol1tud9/taskflow/internal/pb/models";
+
+message Activity {
+    string id = 1;
+    string user_id = 2;
+    string entity_type = 3;
+    string entity_id = 4;
+    string action = 5;
+    string metadata = 6;
+    int64 created_at = 7;
+}
+

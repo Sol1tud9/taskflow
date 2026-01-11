@@ -1,0 +1,42 @@
+app:
+  name: activity-service
+  log_level: info
+
+server:
+  grpc_port: 50051
+  http_port: 8080
+
+sharding:
+  enabled: true
+  shard_count: 2
+  shards:
+    - host: postgres-activity-shard-0
+      port: 5432
+      username: admin
+      password: admin
+      name: activity_db_shard_0
+      ssl_mode: disable
+    - host: postgres-activity-shard-1
+      port: 5432
+      username: admin
+      password: admin
+      name: activity_db_shard_1
+      ssl_mode: disable
+
+kafka:
+  brokers:
+    - kafka:9094
+  consumer_groups:
+    activity_consumer: activity-service-group
+  topics:
+    user_created: user.created
+    user_updated: user.updated
+    task_created: task.created
+    task_updated: task.updated
+
+redis:
+  host: redis
+  port: 6379
+  password: ""
+  db: 0
+

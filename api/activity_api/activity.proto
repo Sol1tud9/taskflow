@@ -1,0 +1,48 @@
+syntax = "proto3";
+package taskflow.activity.v1;
+option go_package = "github.com/Sol1tud9/taskflow/internal/pb/activity_api";
+
+import "models/activity.proto";
+import "google/api/annotations.proto";
+
+service ActivityService {
+    rpc GetActivities(GetActivitiesRequest) returns (GetActivitiesResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/activities"
+        };
+    }
+
+    rpc GetUserActivities(GetUserActivitiesRequest) returns (GetUserActivitiesResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/users/{user_id}/activities"
+        };
+    }
+}
+
+message GetActivitiesRequest {
+    string entity_type = 1;
+    string entity_id = 2;
+    int64 from_timestamp = 3;
+    int64 to_timestamp = 4;
+    int32 limit = 5;
+    int32 offset = 6;
+}
+
+message GetActivitiesResponse {
+    repeated taskflow.models.v1.Activity activities = 1;
+    int32 total = 2;
+}
+
+message GetUserActivitiesRequest {
+    string user_id = 1;
+    int64 from_timestamp = 2;
+    int64 to_timestamp = 3;
+    int32 limit = 4;
+    int32 offset = 5;
+}
+
+message GetUserActivitiesResponse {
+    repeated taskflow.models.v1.Activity activities = 1;
+    int32 total = 2;
+}
+

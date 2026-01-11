@@ -1,0 +1,29 @@
+app:
+  name: task-service
+  log_level: info
+
+server:
+  grpc_port: 50051
+  http_port: 8080
+
+database:
+  host: postgres-task
+  port: 5432
+  username: admin
+  password: admin
+  name: task_db
+  ssl_mode: disable
+
+kafka:
+  brokers:
+    - kafka:9094
+  topics:
+    task_created: task.created
+    task_updated: task.updated
+
+redis:
+  host: redis
+  port: 6379
+  password: ""
+  db: 0
+

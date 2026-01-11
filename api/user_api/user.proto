@@ -1,0 +1,117 @@
+syntax = "proto3";
+package taskflow.user.v1;
+option go_package = "github.com/Sol1tud9/taskflow/internal/pb/user_api";
+
+import "models/user.proto";
+import "google/api/annotations.proto";
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/users"
+            body: "*"
+        };
+    }
+
+    rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/users/{id}"
+        };
+    }
+
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+        option (google.api.http) = {
+            patch: "/api/v1/users/{id}"
+            body: "*"
+        };
+    }
+
+    rpc CreateTeam(CreateTeamRequest) returns (CreateTeamResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/teams"
+            body: "*"
+        };
+    }
+
+    rpc GetTeam(GetTeamRequest) returns (GetTeamResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/teams/{id}"
+        };
+    }
+
+    rpc AddTeamMember(AddTeamMemberRequest) returns (AddTeamMemberResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/teams/{team_id}/members"
+            body: "*"
+        };
+    }
+
+    rpc GetTeamMembers(GetTeamMembersRequest) returns (GetTeamMembersResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/teams/{team_id}/members"
+        };
+    }
+}
+
+message CreateUserRequest {
+    string email = 1;
+    string name = 2;
+}
+
+message CreateUserResponse {
+    taskflow.models.v1.User user = 1;
+}
+
+message GetUserRequest {
+    string id = 1;
+}
+
+message GetUserResponse {
+    taskflow.models.v1.User user = 1;
+}
+
+message UpdateUserRequest {
+    string id = 1;
+    string email = 2;
+    string name = 3;
+}
+
+message UpdateUserResponse {
+    taskflow.models.v1.User user = 1;
+}
+
+message CreateTeamRequest {
+    string name = 1;
+    string owner_id = 2;
+}
+
+message CreateTeamResponse {
+    taskflow.models.v1.Team team = 1;
+}
+
+message GetTeamRequest {
+    string id = 1;
+}
+
+message GetTeamResponse {
+    taskflow.models.v1.Team team = 1;
+}
+
+message AddTeamMemberRequest {
+    string team_id = 1;
+    string user_id = 2;
+    string role = 3;
+}
+
+message AddTeamMemberResponse {
+    taskflow.models.v1.TeamMember member = 1;
+}
+
+message GetTeamMembersRequest {
+    string team_id = 1;
+}
+
+message GetTeamMembersResponse {
+    repeated taskflow.models.v1.TeamMember members = 1;
+}
+
