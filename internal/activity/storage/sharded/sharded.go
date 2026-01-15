@@ -44,7 +44,7 @@ func NewShardedStorage(cfg config.ShardingConfig) (*ShardedStorage, error) {
 	}
 
 	bucketToShard := cfg.BucketMapping
-	if bucketToShard == nil || len(bucketToShard) == 0 {
+	if len(bucketToShard) == 0 {
 		bucketToShard = make(map[int]int)
 		for i := 0; i < bucketCount; i++ {
 			bucketToShard[i] = i % cfg.ShardCount
