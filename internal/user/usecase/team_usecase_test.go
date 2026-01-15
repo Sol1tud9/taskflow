@@ -1,4 +1,4 @@
-package usecase
+package usecase_test
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/Sol1tud9/taskflow/internal/domain"
 	repoMocks "github.com/Sol1tud9/taskflow/internal/user/repository/mocks"
+	userUsecase "github.com/Sol1tud9/taskflow/internal/user/usecase"
 	usecaseMocks "github.com/Sol1tud9/taskflow/internal/user/usecase/mocks"
 )
 
@@ -21,7 +22,7 @@ type TeamUseCaseSuite struct {
 	teamRepo         *repoMocks.TeamRepository
 	teamMemberRepo   *repoMocks.TeamMemberRepository
 	publisher        *usecaseMocks.TeamEventPublisher
-	teamUseCase      *TeamUseCase
+	teamUseCase      *userUsecase.TeamUseCase
 }
 
 func (s *TeamUseCaseSuite) SetupTest() {
@@ -29,7 +30,7 @@ func (s *TeamUseCaseSuite) SetupTest() {
 	s.teamRepo = repoMocks.NewTeamRepository(s.T())
 	s.teamMemberRepo = repoMocks.NewTeamMemberRepository(s.T())
 	s.publisher = usecaseMocks.NewTeamEventPublisher(s.T())
-	s.teamUseCase = NewTeamUseCase(s.teamRepo, s.teamMemberRepo, s.publisher)
+	s.teamUseCase = userUsecase.NewTeamUseCase(s.teamRepo, s.teamMemberRepo, s.publisher)
 }
 
 func (s *TeamUseCaseSuite) TestCreateTeam_Success() {

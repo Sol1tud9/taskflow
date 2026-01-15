@@ -6,10 +6,32 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/Sol1tud9/taskflow/internal/domain"
-	"github.com/Sol1tud9/taskflow/internal/task/repository"
 	"github.com/Sol1tud9/taskflow/pkg/logger"
 	"go.uber.org/zap"
 )
+
+// TaskRepository and TaskHistoryRepository are defined at the point of use.
+type TaskRepository interface {
+	Create(ctx context.Context, task *domain.Task) error
+	GetByID(ctx context.Context, id string) (*domain.Task, error)
+	List(ctx context.Context, filter TaskFilter) ([]*domain.Task, int, error)
+	Update(ctx context.Context, task *domain.Task) error
+	Delete(ctx context.Context, id string) error
+}
+
+type TaskHistoryRepository interface {
+	Create(ctx context.Context, history *domain.TaskHistory) error
+	GetByTaskID(ctx context.Context, taskID string) ([]*domain.TaskHistory, error)
+}
+
+// TaskFilter is used by the usecase (and wired through handler/storage), so keep it near the usecase boundary.
+type TaskFilter struct {
+	TeamID     string
+	AssigneeID string
+	Status     string
+	Limit      int
+	Offset     int
+}
 
 type EventPublisher interface {
 	PublishTaskCreated(ctx context.Context, event domain.TaskCreatedEvent) error
@@ -17,14 +39,14 @@ type EventPublisher interface {
 }
 
 type TaskUseCase struct {
-	taskRepo        repository.TaskRepository
-	taskHistoryRepo repository.TaskHistoryRepository
+	taskRepo        TaskRepository
+	taskHistoryRepo TaskHistoryRepository
 	publisher       EventPublisher
 }
 
 func NewTaskUseCase(
-	taskRepo repository.TaskRepository,
-	taskHistoryRepo repository.TaskHistoryRepository,
+	taskRepo TaskRepository,
+	taskHistoryRepo TaskHistoryRepository,
 	publisher EventPublisher,
 ) *TaskUseCase {
 	return &TaskUseCase{
@@ -83,7 +105,7 @@ func (uc *TaskUseCase) GetTask(ctx context.Context, id string) (*domain.Task, er
 	return uc.taskRepo.GetByID(ctx, id)
 }
 
-func (uc *TaskUseCase) ListTasks(ctx context.Context, filter repository.TaskFilter) ([]*domain.Task, int, error) {
+func (uc *TaskUseCase) ListTasks(ctx context.Context, filter TaskFilter) ([]*domain.Task, int, error) {
 	return uc.taskRepo.List(ctx, filter)
 }
 

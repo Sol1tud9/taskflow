@@ -8,6 +8,7 @@ server:
 
 sharding:
   enabled: true
+  bucket_count: 100  
   shard_count: 2
   shards:
     - host: postgres-activity-shard-0

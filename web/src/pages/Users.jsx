@@ -80,8 +80,8 @@ export default function Users() {
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-dark-800">
-                <p className="text-xs text-dark-500">
-                  ID: {user.id?.slice(0, 8)}...
+                <p className="text-xs text-dark-500 font-mono break-all">
+                  ID: {user.id}
                 </p>
               </div>
             </div>

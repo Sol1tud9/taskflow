@@ -6,10 +6,17 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/Sol1tud9/taskflow/internal/domain"
-	"github.com/Sol1tud9/taskflow/internal/user/repository"
 	"github.com/Sol1tud9/taskflow/pkg/logger"
 	"go.uber.org/zap"
 )
+
+
+type UserRepository interface {
+	Create(ctx context.Context, user *domain.User) error
+	GetByID(ctx context.Context, id string) (*domain.User, error)
+	Update(ctx context.Context, user *domain.User) error
+	Delete(ctx context.Context, id string) error
+}
 
 type EventPublisher interface {
 	PublishUserCreated(ctx context.Context, event domain.UserCreatedEvent) error
@@ -17,11 +24,11 @@ type EventPublisher interface {
 }
 
 type UserUseCase struct {
-	userRepo  repository.UserRepository
+	userRepo  UserRepository
 	publisher EventPublisher
 }
 
-func NewUserUseCase(userRepo repository.UserRepository, publisher EventPublisher) *UserUseCase {
+func NewUserUseCase(userRepo UserRepository, publisher EventPublisher) *UserUseCase {
 	return &UserUseCase{
 		userRepo:  userRepo,
 		publisher: publisher,

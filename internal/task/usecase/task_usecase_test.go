@@ -1,4 +1,4 @@
-package usecase
+package usecase_test
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/Sol1tud9/taskflow/internal/domain"
 	repoMocks "github.com/Sol1tud9/taskflow/internal/task/repository/mocks"
+	taskUsecase "github.com/Sol1tud9/taskflow/internal/task/usecase"
 	usecaseMocks "github.com/Sol1tud9/taskflow/internal/task/usecase/mocks"
 )
 
@@ -21,7 +22,7 @@ type TaskUseCaseSuite struct {
 	taskRepo         *repoMocks.TaskRepository
 	taskHistoryRepo  *repoMocks.TaskHistoryRepository
 	publisher        *usecaseMocks.EventPublisher
-	taskUseCase      *TaskUseCase
+	taskUseCase      *taskUsecase.TaskUseCase
 }
 
 func (s *TaskUseCaseSuite) SetupTest() {
@@ -29,11 +30,11 @@ func (s *TaskUseCaseSuite) SetupTest() {
 	s.taskRepo = repoMocks.NewTaskRepository(s.T())
 	s.taskHistoryRepo = repoMocks.NewTaskHistoryRepository(s.T())
 	s.publisher = usecaseMocks.NewEventPublisher(s.T())
-	s.taskUseCase = NewTaskUseCase(s.taskRepo, s.taskHistoryRepo, s.publisher)
+	s.taskUseCase = taskUsecase.NewTaskUseCase(s.taskRepo, s.taskHistoryRepo, s.publisher)
 }
 
 func (s *TaskUseCaseSuite) TestCreateTask_Success() {
-	input := CreateTaskInput{
+	input := taskUsecase.CreateTaskInput{
 		Title:       "Test Task",
 		Description: "Test Description",
 		Priority:    "high",
@@ -65,7 +66,7 @@ func (s *TaskUseCaseSuite) TestCreateTask_Success() {
 }
 
 func (s *TaskUseCaseSuite) TestCreateTask_RepositoryError() {
-	input := CreateTaskInput{
+	input := taskUsecase.CreateTaskInput{
 		Title: "Test Task",
 	}
 	repoErr := errors.New("repository error")
@@ -115,7 +116,7 @@ func (s *TaskUseCaseSuite) TestUpdateTask_Success() {
 		UpdatedAt:   time.Now(),
 	}
 
-	input := UpdateTaskInput{
+	input := taskUsecase.UpdateTaskInput{
 		Title:  "New Title",
 		Status: "in_progress",
 		UserID: userID,

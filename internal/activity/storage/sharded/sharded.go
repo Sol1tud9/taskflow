@@ -10,9 +10,12 @@ import (
 	"github.com/Sol1tud9/taskflow/pkg/config"
 )
 
+
 type ShardedStorage struct {
-	shards     []*pgxpool.Pool
-	shardCount int
+	shards        []*pgxpool.Pool
+	shardCount    int
+	bucketCount   int
+	bucketToShard map[int]int 
 }
 
 func NewShardedStorage(cfg config.ShardingConfig) (*ShardedStorage, error) {
@@ -35,9 +38,42 @@ func NewShardedStorage(cfg config.ShardingConfig) (*ShardedStorage, error) {
 		shards[i] = db
 	}
 
+	bucketCount := cfg.BucketCount
+	if bucketCount == 0 {
+		bucketCount = cfg.ShardCount
+	}
+
+	bucketToShard := cfg.BucketMapping
+	if bucketToShard == nil || len(bucketToShard) == 0 {
+		bucketToShard = make(map[int]int)
+		for i := 0; i < bucketCount; i++ {
+			bucketToShard[i] = i % cfg.ShardCount
+		}
+	}
+
+	for bucketID, shardID := range bucketToShard {
+		if bucketID < 0 || bucketID >= bucketCount {
+			return nil, errors.Errorf("invalid bucket_id %d: must be in range [0, %d)", bucketID, bucketCount)
+		}
+		if shardID < 0 || shardID >= len(shards) {
+			return nil, errors.Errorf("invalid shard_id %d for bucket %d: must be in range [0, %d)", shardID, bucketID, len(shards))
+		}
+	}
+
+	if len(bucketToShard) < bucketCount {
+		return nil, errors.Errorf("bucket_mapping incomplete: expected %d buckets, got %d", bucketCount, len(bucketToShard))
+	}
+	for i := 0; i < bucketCount; i++ {
+		if _, exists := bucketToShard[i]; !exists {
+			return nil, errors.Errorf("bucket %d has no mapping to shard", i)
+		}
+	}
+
 	storage := &ShardedStorage{
-		shards:     shards,
-		shardCount: cfg.ShardCount,
+		shards:        shards,
+		shardCount:    cfg.ShardCount,
+		bucketCount:   bucketCount,
+		bucketToShard: bucketToShard,
 	}
 
 	if err := storage.initTables(); err != nil {
@@ -79,14 +115,25 @@ func (s *ShardedStorage) initTables() error {
 }
 
 func (s *ShardedStorage) GetShardForUser(userID string) *pgxpool.Pool {
-	shardIndex := s.hashUserID(userID) % s.shardCount
-	return s.shards[shardIndex]
+	bucketID := s.getBucketForUser(userID)
+	shardID := s.bucketToShard[bucketID]
+	return s.shards[shardID]
+}
+
+func (s *ShardedStorage) getBucketForUser(userID string) int {
+	hash := s.hashUserID(userID)
+	bucketID := hash % s.bucketCount
+	return bucketID
 }
 
 func (s *ShardedStorage) hashUserID(userID string) int {
 	h := fnv.New32a()
 	h.Write([]byte(userID))
-	return int(h.Sum32())
+	hashValue := int(h.Sum32())
+	if hashValue < 0 {
+		hashValue = -hashValue
+	}
+	return hashValue
 }
 
 func (s *ShardedStorage) GetAllShards() []*pgxpool.Pool {

@@ -6,7 +6,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/pkg/errors"
 	"github.com/Sol1tud9/taskflow/internal/domain"
-	"github.com/Sol1tud9/taskflow/internal/task/repository"
+	"github.com/Sol1tud9/taskflow/internal/task/usecase"
 )
 
 func (s *Storage) Create(ctx context.Context, task *domain.Task) error {
@@ -51,7 +51,7 @@ func (s *Storage) GetByID(ctx context.Context, id string) (*domain.Task, error) 
 	return &task, nil
 }
 
-func (s *Storage) List(ctx context.Context, filter repository.TaskFilter) ([]*domain.Task, int, error) {
+func (s *Storage) List(ctx context.Context, filter usecase.TaskFilter) ([]*domain.Task, int, error) {
 	query := squirrel.Select("id", "title", "description", "status", "priority", "assignee_id", "creator_id", "team_id", "due_date", "created_at", "updated_at").
 		From("tasks").
 		PlaceholderFormat(squirrel.Dollar)

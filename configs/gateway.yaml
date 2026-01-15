@@ -38,6 +38,7 @@ task_db:
 
 activity_db:
   enabled: true
+  bucket_count: 100  
   shard_count: 2
   shards:
     - host: postgres-activity-shard-0
@@ -52,6 +53,7 @@ activity_db:
       password: admin
       name: activity_db_shard_1
       ssl_mode: disable
+
 
 kafka:
   brokers:

@@ -80,7 +80,7 @@ export default function Teams() {
 
   function getUserName(userId) {
     const user = users.find(u => u.id === userId)
-    return user ? user.name : userId?.slice(0, 8) + '...'
+    return user ? user.name : userId
   }
 
   function getAvailableUsers() {
@@ -131,8 +131,8 @@ export default function Teams() {
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-dark-800 flex items-center justify-between">
-                <p className="text-xs text-dark-500">
-                  ID: {team.id?.slice(0, 8)}...
+                <p className="text-xs text-dark-500 font-mono break-all">
+                  ID: {team.id}
                 </p>
                 <button 
                   onClick={() => viewMembers(team)}

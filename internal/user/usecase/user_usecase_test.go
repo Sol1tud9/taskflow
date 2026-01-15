@@ -1,4 +1,4 @@
-package usecase
+package usecase_test
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"github.com/Sol1tud9/taskflow/internal/domain"
 	repoMocks "github.com/Sol1tud9/taskflow/internal/user/repository/mocks"
+	userUsecase "github.com/Sol1tud9/taskflow/internal/user/usecase"
 	usecaseMocks "github.com/Sol1tud9/taskflow/internal/user/usecase/mocks"
 )
 
@@ -20,14 +21,14 @@ type UserUseCaseSuite struct {
 	ctx            context.Context
 	userRepo       *repoMocks.UserRepository
 	publisher      *usecaseMocks.EventPublisher
-	userUseCase    *UserUseCase
+	userUseCase    *userUsecase.UserUseCase
 }
 
 func (s *UserUseCaseSuite) SetupTest() {
 	s.ctx = context.Background()
 	s.userRepo = repoMocks.NewUserRepository(s.T())
 	s.publisher = usecaseMocks.NewEventPublisher(s.T())
-	s.userUseCase = NewUserUseCase(s.userRepo, s.publisher)
+	s.userUseCase = userUsecase.NewUserUseCase(s.userRepo, s.publisher)
 }
 
 func (s *UserUseCaseSuite) TestCreateUser_Success() {

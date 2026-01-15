@@ -1,4 +1,4 @@
-package usecase
+package usecase_test
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-	"github.com/Sol1tud9/taskflow/internal/activity/repository"
 	repoMocks "github.com/Sol1tud9/taskflow/internal/activity/repository/mocks"
+	activityUsecase "github.com/Sol1tud9/taskflow/internal/activity/usecase"
 	"github.com/Sol1tud9/taskflow/internal/domain"
 )
 
@@ -18,13 +18,13 @@ type ActivityUseCaseSuite struct {
 	suite.Suite
 	ctx           context.Context
 	activityRepo  *repoMocks.ActivityRepository
-	activityUseCase *ActivityUseCase
+	activityUseCase *activityUsecase.ActivityUseCase
 }
 
 func (s *ActivityUseCaseSuite) SetupTest() {
 	s.ctx = context.Background()
 	s.activityRepo = repoMocks.NewActivityRepository(s.T())
-	s.activityUseCase = NewActivityUseCase(s.activityRepo)
+	s.activityUseCase = activityUsecase.NewActivityUseCase(s.activityRepo)
 }
 
 func (s *ActivityUseCaseSuite) TestRecordUserCreated_Success() {
@@ -75,7 +75,7 @@ func (s *ActivityUseCaseSuite) TestGetUserActivities_Success() {
 		},
 	}
 
-	filter := repository.ActivityFilter{
+	filter := activityUsecase.ActivityFilter{
 		Limit:  10,
 		Offset: 0,
 	}
@@ -104,7 +104,7 @@ func (s *ActivityUseCaseSuite) TestGetActivities_Success() {
 		},
 	}
 
-	filter := repository.ActivityFilter{
+	filter := activityUsecase.ActivityFilter{
 		Limit:  10,
 		Offset: 0,
 	}

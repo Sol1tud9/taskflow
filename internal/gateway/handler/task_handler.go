@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/Sol1tud9/taskflow/internal/domain"
-	taskRepo "github.com/Sol1tud9/taskflow/internal/task/repository"
 	taskUsecase "github.com/Sol1tud9/taskflow/internal/task/usecase"
 )
 
@@ -82,7 +81,7 @@ func (h *Handler) ListTasks(w http.ResponseWriter, r *http.Request) {
 		limit = 20
 	}
 
-	filter := taskRepo.TaskFilter{
+	filter := taskUsecase.TaskFilter{
 		TeamID:     query.Get("team_id"),
 		AssigneeID: query.Get("assignee_id"),
 		Status:     query.Get("status"),

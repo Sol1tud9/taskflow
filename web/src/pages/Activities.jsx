@@ -83,8 +83,8 @@ export default function Activities() {
                     {activity.action}
                   </span>
                 </div>
-                <p className="text-sm text-dark-500 truncate">
-                  Entity: {activity.entity_id?.slice(0, 8)}... | User: {activity.user_id?.slice(0, 8)}...
+                <p className="text-sm text-dark-500 break-all">
+                  Entity: <span className="font-mono">{activity.entity_id}</span> | User: <span className="font-mono">{activity.user_id}</span>
                 </p>
               </div>
               

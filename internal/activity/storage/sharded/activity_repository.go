@@ -8,7 +8,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pkg/errors"
-	"github.com/Sol1tud9/taskflow/internal/activity/repository"
+	activityUsecase "github.com/Sol1tud9/taskflow/internal/activity/usecase"
 	"github.com/Sol1tud9/taskflow/internal/domain"
 )
 
@@ -32,13 +32,13 @@ func (s *ShardedStorage) Create(ctx context.Context, activity *domain.Activity) 
 	return nil
 }
 
-func (s *ShardedStorage) GetByUserID(ctx context.Context, userID string, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (s *ShardedStorage) GetByUserID(ctx context.Context, userID string, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	shard := s.GetShardForUser(userID)
 
 	return s.queryActivities(ctx, shard, squirrel.Eq{"user_id": userID}, filter)
 }
 
-func (s *ShardedStorage) GetByEntity(ctx context.Context, entityType, entityID string, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (s *ShardedStorage) GetByEntity(ctx context.Context, entityType, entityID string, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	var allActivities []*domain.Activity
 	var totalCount int
 
@@ -57,7 +57,7 @@ func (s *ShardedStorage) GetByEntity(ctx context.Context, entityType, entityID s
 	return allActivities, totalCount, nil
 }
 
-func (s *ShardedStorage) GetAll(ctx context.Context, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (s *ShardedStorage) GetAll(ctx context.Context, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	var allActivities []*domain.Activity
 	var totalCount int
 
@@ -81,7 +81,7 @@ func (s *ShardedStorage) GetAll(ctx context.Context, filter repository.ActivityF
 	return allActivities, totalCount, nil
 }
 
-func (s *ShardedStorage) queryActivities(ctx context.Context, shard *pgxpool.Pool, where squirrel.Sqlizer, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (s *ShardedStorage) queryActivities(ctx context.Context, shard *pgxpool.Pool, where squirrel.Sqlizer, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	query := squirrel.Select("id", "user_id", "entity_type", "entity_id", "action", "metadata", "created_at").
 		From("activities").
 		Where(where).

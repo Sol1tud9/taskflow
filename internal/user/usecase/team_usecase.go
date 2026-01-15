@@ -6,24 +6,36 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/Sol1tud9/taskflow/internal/domain"
-	"github.com/Sol1tud9/taskflow/internal/user/repository"
 	"github.com/Sol1tud9/taskflow/pkg/logger"
 	"go.uber.org/zap"
 )
+
+type TeamRepository interface {
+	Create(ctx context.Context, team *domain.Team) error
+	GetByID(ctx context.Context, id string) (*domain.Team, error)
+	Update(ctx context.Context, team *domain.Team) error
+	Delete(ctx context.Context, id string) error
+}
+
+type TeamMemberRepository interface {
+	Add(ctx context.Context, member *domain.TeamMember) error
+	GetByTeamID(ctx context.Context, teamID string) ([]*domain.TeamMember, error)
+	Remove(ctx context.Context, teamID, userID string) error
+}
 
 type TeamEventPublisher interface {
 	PublishTeamUpdated(ctx context.Context, event domain.TeamUpdatedEvent) error
 }
 
 type TeamUseCase struct {
-	teamRepo       repository.TeamRepository
-	teamMemberRepo repository.TeamMemberRepository
+	teamRepo       TeamRepository
+	teamMemberRepo TeamMemberRepository
 	publisher      TeamEventPublisher
 }
 
 func NewTeamUseCase(
-	teamRepo repository.TeamRepository,
-	teamMemberRepo repository.TeamMemberRepository,
+	teamRepo TeamRepository,
+	teamMemberRepo TeamMemberRepository,
 	publisher TeamEventPublisher,
 ) *TeamUseCase {
 	return &TeamUseCase{

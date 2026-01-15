@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/mock"
-	"github.com/Sol1tud9/taskflow/internal/activity/repository"
 	"github.com/Sol1tud9/taskflow/internal/domain"
+	activityUsecase "github.com/Sol1tud9/taskflow/internal/activity/usecase"
 )
 
 type ActivityRepository struct {
@@ -24,7 +24,7 @@ func (m *ActivityRepository) Create(ctx context.Context, activity *domain.Activi
 	return args.Error(0)
 }
 
-func (m *ActivityRepository) GetByUserID(ctx context.Context, userID string, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (m *ActivityRepository) GetByUserID(ctx context.Context, userID string, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	args := m.Called(ctx, userID, filter)
 	if args.Get(0) == nil {
 		return nil, args.Get(1).(int), args.Error(2)
@@ -32,7 +32,7 @@ func (m *ActivityRepository) GetByUserID(ctx context.Context, userID string, fil
 	return args.Get(0).([]*domain.Activity), args.Get(1).(int), args.Error(2)
 }
 
-func (m *ActivityRepository) GetByEntity(ctx context.Context, entityType, entityID string, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (m *ActivityRepository) GetByEntity(ctx context.Context, entityType, entityID string, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	args := m.Called(ctx, entityType, entityID, filter)
 	if args.Get(0) == nil {
 		return nil, args.Get(1).(int), args.Error(2)
@@ -40,7 +40,7 @@ func (m *ActivityRepository) GetByEntity(ctx context.Context, entityType, entity
 	return args.Get(0).([]*domain.Activity), args.Get(1).(int), args.Error(2)
 }
 
-func (m *ActivityRepository) GetAll(ctx context.Context, filter repository.ActivityFilter) ([]*domain.Activity, int, error) {
+func (m *ActivityRepository) GetAll(ctx context.Context, filter activityUsecase.ActivityFilter) ([]*domain.Activity, int, error) {
 	args := m.Called(ctx, filter)
 	if args.Get(0) == nil {
 		return nil, args.Get(1).(int), args.Error(2)

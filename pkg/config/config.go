@@ -49,9 +49,11 @@ type ShardConfig struct {
 }
 
 type ShardingConfig struct {
-	Enabled    bool          `mapstructure:"enabled"`
-	ShardCount int           `mapstructure:"shard_count"`
-	Shards     []ShardConfig `mapstructure:"shards"`
+	Enabled      bool          `mapstructure:"enabled"`
+	BucketCount  int           `mapstructure:"bucket_count"` 
+	ShardCount   int           `mapstructure:"shard_count"`   
+	Shards       []ShardConfig `mapstructure:"shards"`
+	BucketMapping map[int]int  `mapstructure:"bucket_mapping"` 
 }
 
 type ServiceEndpoint struct {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/mock"
 	"github.com/Sol1tud9/taskflow/internal/domain"
-	"github.com/Sol1tud9/taskflow/internal/task/repository"
+	taskUsecase "github.com/Sol1tud9/taskflow/internal/task/usecase"
 )
 
 type TaskRepository struct {
@@ -32,7 +32,7 @@ func (m *TaskRepository) GetByID(ctx context.Context, id string) (*domain.Task, 
 	return args.Get(0).(*domain.Task), args.Error(1)
 }
 
-func (m *TaskRepository) List(ctx context.Context, filter repository.TaskFilter) ([]*domain.Task, int, error) {
+func (m *TaskRepository) List(ctx context.Context, filter taskUsecase.TaskFilter) ([]*domain.Task, int, error) {
 	args := m.Called(ctx, filter)
 	if args.Get(0) == nil {
 		return nil, args.Get(1).(int), args.Error(2)

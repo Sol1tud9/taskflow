@@ -139,8 +139,8 @@ export default function Tasks() {
                 {task.description && (
                   <p className="text-dark-400 text-sm mb-2">{task.description}</p>
                 )}
-                <p className="text-xs text-dark-500">
-                  ID: {task.id?.slice(0, 8)}...
+                <p className="text-xs text-dark-500 font-mono break-all">
+                  ID: {task.id}
                 </p>
               </div>
               

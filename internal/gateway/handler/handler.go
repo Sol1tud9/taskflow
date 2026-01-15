@@ -10,7 +10,6 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/Sol1tud9/taskflow/internal/domain"
 	"github.com/Sol1tud9/taskflow/internal/gateway/cache"
-	taskRepo "github.com/Sol1tud9/taskflow/internal/task/repository"
 	taskUsecase "github.com/Sol1tud9/taskflow/internal/task/usecase"
 )
 
@@ -30,7 +29,7 @@ type TeamUseCase interface {
 type TaskUseCase interface {
 	CreateTask(ctx context.Context, input taskUsecase.CreateTaskInput) (*domain.Task, error)
 	GetTask(ctx context.Context, id string) (*domain.Task, error)
-	ListTasks(ctx context.Context, filter taskRepo.TaskFilter) ([]*domain.Task, int, error)
+	ListTasks(ctx context.Context, filter taskUsecase.TaskFilter) ([]*domain.Task, int, error)
 	UpdateTask(ctx context.Context, id string, input taskUsecase.UpdateTaskInput) (*domain.Task, error)
 	DeleteTask(ctx context.Context, id string) error
 	GetTaskHistory(ctx context.Context, taskID string) ([]*domain.TaskHistory, error)
@@ -51,7 +50,7 @@ type TeamLister interface {
 }
 
 type Handler struct {
-	cache      *cache.RedisCache
+	cache      cache.Cache
 	userUC     UserUseCase
 	teamUC     TeamUseCase
 	taskUC     TaskUseCase
@@ -61,7 +60,7 @@ type Handler struct {
 }
 
 func NewHandler(
-	cache *cache.RedisCache,
+	cache cache.Cache,
 	userUC UserUseCase,
 	teamUC TeamUseCase,
 	taskUC TaskUseCase,
@@ -128,7 +127,6 @@ func (h *Handler) Router() http.Handler {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		if _, err := w.Write([]byte("OK")); err != nil {
-			// Log error if logger is available, but client already received headers
 			return
 		}
 	})
@@ -143,7 +141,6 @@ func respondJSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		// Log error if logger is available, but client already received headers
 		return
 	}
 }
